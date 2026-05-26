@@ -144,7 +144,7 @@ nav {
 .hero-subtitle {
     font-family: 'IM Fell English', serif;
     font-style: italic;
-    font-size: 18px;
+    font-size: 20px;
     color: var(--bone);
     opacity: 0.7;
     margin-bottom: 3rem;
@@ -156,7 +156,7 @@ nav {
 .hero-meta {
     display: flex;
     gap: 3rem;
-    font-size: 10px;
+    font-size: 16px;
     letter-spacing: 3px;
     text-transform: uppercase;
     color: var(--ash);
