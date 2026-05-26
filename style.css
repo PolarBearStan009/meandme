@@ -1,0 +1,617 @@
+/* ─────────────────────────────────────────
+   VARIABLES
+───────────────────────────────────────── */
+:root {
+    --black: #080608;
+    --deep: #0d0a0e;
+    --bone: #c9b99a;
+    --rot: #8b3a2a;
+    --rust: #5c1f12;
+    --ash: #3a3335;
+    --pale: #e8ddd0;
+}
+
+/* ─────────────────────────────────────────
+   RESET & BASE
+───────────────────────────────────────── */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--black);
+    color: var(--bone);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: crosshair;
+}
+
+/* ─────────────────────────────────────────
+   OVERLAYS (noise + scanlines)
+───────────────────────────────────────── */
+.noise {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+.scanlines {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    background: repeating-linear-gradient(0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.08) 2px,
+            rgba(0, 0, 0, 0.08) 4px);
+}
+
+/* ─────────────────────────────────────────
+   NAV
+───────────────────────────────────────── */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--ash);
+    background: rgba(8, 6, 8, 0.92);
+    backdrop-filter: blur(4px);
+}
+
+.nav-sigil {
+    font-family: 'UnifrakturMaguntia', cursive;
+    font-size: 22px;
+    color: var(--pale);
+    letter-spacing: 2px;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-links a {
+    color: var(--bone);
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.6;
+    transition: opacity 0.2s, color 0.2s;
+}
+
+.nav-links a:hover {
+    opacity: 1;
+    color: var(--pale);
+}
+
+/* ─────────────────────────────────────────
+   HERO
+───────────────────────────────────────── */
+.hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 0 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.hero-label {
+    font-size: 10px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--rot);
+    margin-bottom: 1.5rem;
+}
+
+.hero-name {
+    font-family: 'UnifrakturMaguntia', cursive;
+    font-size: clamp(72px, 14vw, 140px);
+    line-height: 0.9;
+    color: var(--pale);
+    letter-spacing: -2px;
+    margin-bottom: 1rem;
+    animation: glitch 8s infinite;
+}
+
+.hero-name span {
+    color: var(--rot);
+}
+
+.hero-subtitle {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--bone);
+    opacity: 0.7;
+    margin-bottom: 3rem;
+    max-width: 500px;
+    border-left: 2px solid var(--rust);
+    padding-left: 1.2rem;
+}
+
+.hero-meta {
+    display: flex;
+    gap: 3rem;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--ash);
+}
+
+.hero-meta span {
+    color: var(--rot);
+}
+
+.hero-deco {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 280px;
+    opacity: 0.07;
+    pointer-events: none;
+}
+
+/* ─────────────────────────────────────────
+   SECTIONS (shared)
+───────────────────────────────────────── */
+section {
+    min-height: 100vh;
+    padding: 8rem 2rem 4rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    border-bottom: 1px solid var(--ash);
+    padding-bottom: 1rem;
+}
+
+.section-num {
+    font-size: 10px;
+    color: var(--rot);
+    letter-spacing: 4px;
+}
+
+.section-title {
+    font-family: 'UnifrakturMaguntia', cursive;
+    font-size: 38px;
+    color: var(--pale);
+    letter-spacing: 1px;
+}
+
+/* ─────────────────────────────────────────
+   ABOUT
+───────────────────────────────────────── */
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-bottom: 3rem;
+}
+
+.about-cell {
+    background: var(--deep);
+    border: 1px solid var(--ash);
+    padding: 1.5rem;
+    position: relative;
+}
+
+.about-cell::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 1px;
+    background: var(--rot);
+}
+
+.cell-label {
+    font-size: 9px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--rot);
+    margin-bottom: 0.75rem;
+}
+
+.cell-content {
+    font-family: 'IM Fell English', serif;
+    font-size: 15px;
+    color: var(--bone);
+    line-height: 1.7;
+}
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 2rem;
+}
+
+.tag {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border: 1px solid var(--ash);
+    color: var(--bone);
+    opacity: 0.6;
+    cursor: default;
+    transition: opacity 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.tag:hover {
+    opacity: 1;
+    border-color: var(--rot);
+    color: var(--pale);
+}
+
+/* ─────────────────────────────────────────
+   WORKS / PROJECTS
+───────────────────────────────────────── */
+.project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.project-item {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    align-items: start;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    border: 1px solid var(--ash);
+    background: var(--deep);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, background 0.2s;
+    cursor: pointer;
+}
+
+.project-item:hover {
+    border-color: var(--rot);
+    background: #110b0d;
+}
+
+.project-num {
+    font-size: 28px;
+    color: var(--ash);
+    line-height: 1;
+    font-family: 'IM Fell English', serif;
+}
+
+.project-name {
+    font-family: 'UnifrakturMaguntia', cursive;
+    font-size: 24px;
+    color: var(--pale);
+    margin-bottom: 4px;
+}
+
+.project-desc {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--bone);
+    opacity: 0.7;
+    margin-bottom: 8px;
+}
+
+.project-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.ptag {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--rot);
+    border: 1px solid var(--rust);
+    padding: 2px 7px;
+}
+
+.project-arrow {
+    font-size: 20px;
+    color: var(--ash);
+    align-self: center;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.project-item:hover .project-arrow {
+    color: var(--rot);
+    transform: translateX(4px);
+}
+
+/* ─────────────────────────────────────────
+   MUSIC
+───────────────────────────────────────── */
+.music-block {
+    border: 1px solid var(--ash);
+    background: var(--deep);
+    padding: 2rem;
+    margin-bottom: 2px;
+    position: relative;
+    overflow: hidden;
+}
+
+.music-block::after {
+    content: '♦';
+    position: absolute;
+    right: 1.5rem;
+    top: 1.5rem;
+    font-size: 10px;
+    color: var(--rot);
+    opacity: 0.5;
+}
+
+.music-title {
+    font-family: 'UnifrakturMaguntia', cursive;
+    font-size: 28px;
+    color: var(--pale);
+    margin-bottom: 0.5rem;
+}
+
+.music-role {
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--rot);
+    margin-bottom: 1rem;
+}
+
+.music-desc {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--bone);
+    opacity: 0.75;
+    max-width: 500px;
+}
+
+.music-desc--highlight {
+    font-size: 15px;
+    opacity: 1;
+    color: var(--pale);
+}
+
+.waveform {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 40px;
+    margin-top: 1.5rem;
+    opacity: 0.4;
+}
+
+.waveform-bar {
+    width: 3px;
+    background: var(--rot);
+    animation: wave 1.2s ease-in-out infinite;
+}
+
+@keyframes wave {
+
+    0%,
+    100% {
+        transform: scaleY(0.3);
+    }
+
+    50% {
+        transform: scaleY(1);
+    }
+}
+
+/* ─────────────────────────────────────────
+   DOCTRINE
+───────────────────────────────────────── */
+.thoughts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.thought-item {
+    border-left: 2px solid var(--rust);
+    padding: 1.5rem 1.5rem 1.5rem 2rem;
+    background: var(--deep);
+    border-top: 1px solid var(--ash);
+    border-right: 1px solid var(--ash);
+    border-bottom: 1px solid var(--ash);
+}
+
+.thought-date {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--rot);
+    margin-bottom: 0.5rem;
+}
+
+.thought-title {
+    font-family: 'IM Fell English', serif;
+    font-size: 17px;
+    color: var(--pale);
+    margin-bottom: 0.5rem;
+}
+
+.thought-preview {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--bone);
+    opacity: 0.65;
+}
+
+/* ─────────────────────────────────────────
+   SUMMON / LINKS
+───────────────────────────────────────── */
+.links-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+}
+
+.link-item {
+    border: 1px solid var(--ash);
+    padding: 1.5rem;
+    background: var(--deep);
+    text-decoration: none;
+    color: var(--bone);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+
+.link-item:hover {
+    border-color: var(--rot);
+    background: #110b0d;
+    color: var(--pale);
+}
+
+.link-platform {
+    font-size: 9px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--rot);
+}
+
+.link-handle {
+    font-family: 'IM Fell English', serif;
+    font-size: 16px;
+    color: var(--pale);
+}
+
+/* ─────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────── */
+.divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, var(--rust), transparent);
+    margin: 1rem 0;
+}
+
+footer {
+    border-top: 1px solid var(--ash);
+    padding: 3rem 2rem;
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--ash);
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+footer span {
+    color: var(--rot);
+}
+
+.footer-sub {
+    font-size: 9px;
+    opacity: 0.4;
+    letter-spacing: 2px;
+}
+
+/* ─────────────────────────────────────────
+   ANIMATIONS
+───────────────────────────────────────── */
+@keyframes glitch {
+
+    0%,
+    90%,
+    100% {
+        transform: none;
+        clip-path: none;
+    }
+
+    91% {
+        transform: skewX(-2deg);
+        clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
+    }
+
+    93% {
+        transform: skewX(1deg);
+        clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+    }
+
+    95% {
+        transform: none;
+        clip-path: none;
+    }
+}
+
+/* ─────────────────────────────────────────
+   MOBILE
+───────────────────────────────────────── */
+@media (max-width: 600px) {
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .links-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .hero-meta {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .hero-deco {
+        display: none;
+    }
+
+    nav {
+        padding: 1rem;
+    }
+
+    .nav-links {
+        gap: 1rem;
+    }
+
+    .nav-links a {
+        font-size: 9px;
+        letter-spacing: 1px;
+    }
+
+    section {
+        padding: 6rem 1rem 3rem;
+    }
+
+    .hero {
+        padding: 0 1rem;
+    }
+}
